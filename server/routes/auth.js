@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { User } from "../models/AuthModel.js";
-import { getShopDb } from "../dbManager.js";
+import { getShopDb } from "../dbmanager.js";
 import getDebtNoteModel from "../models/DebtModel.js";
 
 const router = express.Router();
