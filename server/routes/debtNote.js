@@ -1,6 +1,6 @@
 // routes/getDebtNoteModel.js
 import express from "express";
-import { getShopDb } from "../dbManager.js";
+import { getShopDb } from "../dbmnager.js";
 import getDebtNoteModel from "../models/DebtModel.js";
 import { authenticateToken } from "../middleware/auth.js";
 
