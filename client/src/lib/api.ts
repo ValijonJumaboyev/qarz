@@ -11,8 +11,14 @@ const getApiUrl = () => {
         return 'https://your-backend-url.railway.app/api';
     }
 
-    // Development fallback
-    return "http://localhost:3000/api";
+    // Development: Use current hostname and port 3000 for API
+    // This allows access from local network IPs (e.g., 192.168.x.x)
+    const hostname = window.location.hostname;
+    const apiPort = 3000;
+    
+    // If accessing via localhost, use localhost
+    // If accessing via IP (192.168.x.x, 10.x.x.x, etc.), use that IP
+    return `http://${hostname}:${apiPort}/api`;
 };
 
 export const apiClient = axios.create({
@@ -131,6 +137,11 @@ export async function listDebts() {
 
 export async function createDebt(payload: CreateDebtPayload) {
     const { data } = await apiClient.post(`/debts`, payload);
+    return data;
+}
+
+export async function updateDebtStatus(debtId: string, status: string) {
+    const { data } = await apiClient.patch(`/debts/${debtId}`, { status });
     return data;
 }
 

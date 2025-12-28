@@ -20,9 +20,31 @@ const corsOptions = {
         if (!origin) return callback(null, true);
 
         const allowedOrigins = productionConfig.CORS_ORIGINS;
-        if (allowedOrigins.indexOf(origin) !== -1) {
+        
+        // Check if origin matches any allowed origin (string or regex)
+        const isAllowed = allowedOrigins.some(allowed => {
+            if (typeof allowed === 'string') {
+                return allowed === origin;
+            } else if (allowed instanceof RegExp) {
+                return allowed.test(origin);
+            }
+            return false;
+        });
+
+        if (isAllowed) {
             callback(null, true);
         } else {
+            // In development, be more permissive with local network IPs
+            const isDevelopment = process.env.NODE_ENV !== 'production';
+            if (isDevelopment) {
+                // Allow local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+                const localNetworkPattern = /^http:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+):\d+$/;
+                if (localNetworkPattern.test(origin)) {
+                    console.log(`✅ Allowing local network origin: ${origin}`);
+                    return callback(null, true);
+                }
+            }
+            console.log(`❌ CORS blocked origin: ${origin}`);
             callback(new Error('Not allowed by CORS'));
         }
     },
@@ -63,14 +85,16 @@ app.get("/", (req, res) => {
 // MongoDB connection
 mongoose
     .connect(MONGO_URI, {
-        dbName: "authDB", // main auth DB
+        dbName: "authDB",
     })
     .then(() => {
         console.log("✅ Connected to MongoDB (authDB)");
         console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-        app.listen(PORT, () =>
-            console.log(`🚀 QarzDaftar API running on http://localhost:${PORT}`)
-        );
+        // Listen on 0.0.0.0 to allow connections from local network
+        app.listen(PORT, '0.0.0.0', () => {
+            console.log(`🚀 QarzDaftar API running on http://localhost:${PORT}`);
+            console.log(`🌐 Accessible from local network on port ${PORT}`);
+        });
     })
     .catch((err) => {
         console.error("❌ MongoDB connection failed:", err.message);

@@ -1,0 +1,11 @@
+{
+  "name": "Debt Tracker",
+  "short_name": "DebtTrack",
+  "description": "Track debts, send reminders, and manage payments for shop owners",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#1A1A1A",
+  "theme_color": "#FBBF24",
+  "orientation": "portrait"
+}

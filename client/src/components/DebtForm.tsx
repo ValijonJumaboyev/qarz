@@ -63,15 +63,15 @@ export default function DebtForm({ onCreated }: { onCreated: () => void }) {
       <h3 className="font-semibold text-gray-900 dark:text-gray-100">
         Yangi qarz
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input
-          className="border rounded-lg px-3 py-2 bg-gray-50 dark:bg-gray-800"
+          className="border rounded-lg px-3 py-2 text-sm sm:text-base bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
           placeholder="Mijoz nomi"
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}
         />
         <input
-          className="border rounded-lg px-3 py-2 bg-gray-50 dark:bg-gray-800"
+          className="border rounded-lg px-3 py-2 text-sm sm:text-base bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
           placeholder="Telefon (ixtiyoriy)"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
@@ -79,15 +79,15 @@ export default function DebtForm({ onCreated }: { onCreated: () => void }) {
       </div>
       <div className="space-y-2">
         {items.map((it, idx) => (
-          <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+          <div key={idx} className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
             <input
-              className="col-span-7 border rounded-lg px-3 py-2 bg-gray-50 dark:bg-gray-800"
+              className="col-span-1 sm:col-span-7 border rounded-lg px-3 py-2 text-sm sm:text-base bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="Tovar/ish"
               value={it.description}
               onChange={(e) => updateItem(idx, "description", e.target.value)}
             />
             <input
-              className="col-span-3 border rounded-lg px-3 py-2 bg-gray-50 dark:bg-gray-800"
+              className="col-span-1 sm:col-span-3 border rounded-lg px-3 py-2 text-sm sm:text-base bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="Summa"
               type="text"
               inputMode="numeric"
@@ -101,7 +101,7 @@ export default function DebtForm({ onCreated }: { onCreated: () => void }) {
             <button
               type="button"
               onClick={() => removeItem(idx)}
-              className="col-span-2 px-3 py-2 rounded-lg bg-red-100 text-red-700"
+              className="col-span-1 sm:col-span-2 px-3 py-2 text-sm sm:text-base rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition"
             >
               O'chirish
             </button>
@@ -110,19 +110,19 @@ export default function DebtForm({ onCreated }: { onCreated: () => void }) {
         <button
           type="button"
           onClick={addItem}
-          className="px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-800"
+          className="w-full sm:w-auto px-3 py-2 text-sm sm:text-base rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
         >
           + Yozuv qo'shish
         </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
         <input
-          className="border rounded-lg px-3 py-2 bg-gray-50 dark:bg-gray-800"
+          className="border rounded-lg px-3 py-2 text-sm sm:text-base bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
         />
-        <div className="text-right font-semibold text-gray-900 dark:text-gray-100">
+        <div className="text-left sm:text-right font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">
           Jami: {total.toLocaleString()}
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function DebtForm({ onCreated }: { onCreated: () => void }) {
         type="button"
         disabled={submitting}
         onClick={submit}
-        className="w-full md:w-auto px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-60"
+        className="w-full px-4 py-2 text-sm sm:text-base rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-60 transition"
       >
         {submitting ? "Saqlanmoqda..." : "Qarz qo'shish"}
       </button>

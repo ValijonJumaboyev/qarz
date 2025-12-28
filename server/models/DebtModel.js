@@ -15,7 +15,7 @@ export const debtNoteSchema = new mongoose.Schema(
         dueDate: { type: Date },
         status: {
             type: String,
-            enum: ["unpaid", "paid", "partial"],
+            enum: ["unpaid", "paid", "disabled"],
             default: "unpaid",
         },
         createdAt: { type: Date, default: Date.now },

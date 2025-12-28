@@ -4,6 +4,7 @@ import LandingPage from "./pages/LandingPage"
 import SignIn from "./pages/SignIn"
 import PrivateRoute from "./components/PrivateRoute"
 import Dashboard from "./pages/Dashboard"
+import Reminders from "./pages/Reminders"
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       <Route path="/signin" element={<SignIn />} />
       <Route element={<PrivateRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/reminders" element={<Reminders />} />
       </Route>
     </Routes>
   )

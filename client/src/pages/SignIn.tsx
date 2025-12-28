@@ -24,13 +24,13 @@ export default function SignIn() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 transition-colors">
-      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 transition-colors px-4 py-8">
+      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 sm:p-8">
         {/* Header */}
-        <h1 className="text-3xl font-bold text-center mb-2 text-gray-900 dark:text-gray-100">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2 text-gray-900 dark:text-gray-100">
           Qarzdor<span className="text-emerald-600">.uz</span>
         </h1>
-        <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
+        <p className="text-center text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 sm:mb-8">
           Hisobingizga kiring
         </p>
 
@@ -93,7 +93,7 @@ export default function SignIn() {
         </form>
 
         {/* Extra Links */}
-        <div className="flex justify-between items-center mt-6 text-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0 mt-6 text-xs sm:text-sm">
           <Link
             to="/signup"
             className="text-emerald-600 dark:text-emerald-400 hover:underline"

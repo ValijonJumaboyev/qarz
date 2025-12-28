@@ -79,23 +79,25 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-green-100 dark:from-gray-950 dark:to-gray-900 px-6">
-      <div className="w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-10">
-        <h2 className="text-3xl font-extrabold text-center mb-6 text-gray-900 dark:text-white">
-          Hisob yaratish
-        </h2>
-        <button
-          onClick={toggleDarkMode}
-          className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:scale-110 transition"
-          aria-label="Toggle dark mode"
-        >
-          {darkMode ? (
-            <SunIcon className="h-6 w-6 text-yellow-400" />
-          ) : (
-            <MoonIcon className="h-6 w-6 text-gray-700 dark:text-gray-200" />
-          )}
-        </button>
-        <form onSubmit={handleSubmit} className="space-y-5">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-green-100 dark:from-gray-950 dark:to-gray-900 px-4 py-8">
+      <div className="w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8 md:p-10">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
+            Hisob yaratish
+          </h2>
+          <button
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:scale-110 transition shrink-0"
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? (
+              <SunIcon className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
+            ) : (
+              <MoonIcon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700 dark:text-gray-200" />
+            )}
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           {/* Full Name */}
           <div>
             <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
@@ -265,7 +267,7 @@ export default function SignUp() {
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
+        <p className="text-center text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-4 sm:mt-6">
           Allaqachon hisobingiz bormi?{" "}
           <Link
             to="/signin"
