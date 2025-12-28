@@ -268,7 +268,7 @@ export default function SignUp() {
           {/* Submit */}
           <button
             type="submit"
-            disabled={loading || !agreed}
+            disabled={loading && !agreed}
             className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-semibold rounded-xl transition"
           >
             {loading ? "Yuklanmoqda..." : "Hisob yaratish"}
