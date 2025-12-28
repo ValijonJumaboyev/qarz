@@ -11,6 +11,8 @@ import {
   MoonIcon,
 } from "@heroicons/react/24/outline"
 
+const [agreed, setAgreed] = useState(false)
+
 export default function SignUp() {
   const [form, setForm] = useState({
     name: "",
@@ -21,7 +23,6 @@ export default function SignUp() {
     businessName: "",
     businessType: "",
   })
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -110,7 +111,7 @@ export default function SignUp() {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none"
+                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
                 placeholder="Ali Valiyev"
                 required
               />
@@ -129,7 +130,7 @@ export default function SignUp() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none"
+                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
                 placeholder="you@example.com"
                 required
               />
@@ -148,7 +149,7 @@ export default function SignUp() {
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none"
+                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
                 placeholder="+998 90 123 45 67"
                 required
               />
@@ -167,7 +168,7 @@ export default function SignUp() {
                 name="businessName"
                 value={form.businessName}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none"
+                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
                 placeholder="Qarzdor Supermarket"
                 required
               />
@@ -206,7 +207,7 @@ export default function SignUp() {
                 name="password"
                 value={form.password}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none"
+                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
                 placeholder="********"
                 required
               />
@@ -225,7 +226,7 @@ export default function SignUp() {
                 name="confirmPassword"
                 value={form.confirmPassword}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none"
+                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
                 placeholder="********"
                 required
               />
@@ -234,7 +235,14 @@ export default function SignUp() {
 
           {/* Terms */}
           <div className="flex items-center">
-            <input type="checkbox" id="terms" className="mr-2" required />
+            <input
+              type="checkbox"
+              id="terms"
+              className="mr-2"
+              required
+              checked={agreed}
+              onChange={() => setAgreed(!agreed)}
+            />
             <label
               htmlFor="terms"
               className="text-sm text-gray-700 dark:text-gray-300"
@@ -260,7 +268,7 @@ export default function SignUp() {
           {/* Submit */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !agreed}
             className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-semibold rounded-xl transition"
           >
             {loading ? "Yuklanmoqda..." : "Hisob yaratish"}
