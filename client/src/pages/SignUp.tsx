@@ -11,8 +11,6 @@ import {
   MoonIcon,
 } from "@heroicons/react/24/outline"
 
-const [agreed, setAgreed] = useState(false)
-
 export default function SignUp() {
   const [form, setForm] = useState({
     name: "",
@@ -235,14 +233,7 @@ export default function SignUp() {
 
           {/* Terms */}
           <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="terms"
-              className="mr-2"
-              required
-              checked={agreed}
-              onChange={() => setAgreed(!agreed)}
-            />
+            <input type="checkbox" id="terms" className="mr-2" required />
             <label
               htmlFor="terms"
               className="text-sm text-gray-700 dark:text-gray-300"
@@ -268,7 +259,7 @@ export default function SignUp() {
           {/* Submit */}
           <button
             type="submit"
-            disabled={loading && !agreed}
+            disabled={loading}
             className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-semibold rounded-xl transition"
           >
             {loading ? "Yuklanmoqda..." : "Hisob yaratish"}
