@@ -8,7 +8,7 @@ const getApiUrl = () => {
 
     // Production fallback
     if (import.meta.env.PROD) {
-        return 'https://qarz.onrender.app/api';
+        return 'https://qarz.onrender.app';
     }
 
     // Development: Use current hostname and port 3000 for API
