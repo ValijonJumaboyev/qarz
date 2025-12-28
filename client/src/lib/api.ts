@@ -8,14 +8,14 @@ const getApiUrl = () => {
 
     // Production fallback
     if (import.meta.env.PROD) {
-        return 'https://your-backend-url.railway.app/api';
+        return 'https://qarz.onrender.app/api';
     }
 
     // Development: Use current hostname and port 3000 for API
     // This allows access from local network IPs (e.g., 192.168.x.x)
     const hostname = window.location.hostname;
     const apiPort = 3000;
-    
+
     // If accessing via localhost, use localhost
     // If accessing via IP (192.168.x.x, 10.x.x.x, etc.), use that IP
     return `http://${hostname}:${apiPort}/api`;
