@@ -2,13 +2,17 @@ import axios from "axios";
 
 // Get API URL from environment or use production config
 const getApiUrl = () => {
+    // First check for environment variable (highest priority)
     if (import.meta.env.VITE_API_URL) {
+        console.log("Using VITE_API_URL:", import.meta.env.VITE_API_URL);
         return import.meta.env.VITE_API_URL;
     }
 
-    // Production fallback
+    // Production fallback - use the correct Render URL
     if (import.meta.env.PROD) {
-        return 'https://qarz.onrender.app';
+        const prodUrl = 'https://qarz.onrender.com/api';
+        console.log("Using production API URL:", prodUrl);
+        return prodUrl;
     }
 
     // Development: Use current hostname and port 3000 for API
@@ -18,13 +22,21 @@ const getApiUrl = () => {
 
     // If accessing via localhost, use localhost
     // If accessing via IP (192.168.x.x, 10.x.x.x, etc.), use that IP
-    return `http://${hostname}:${apiPort}/api`;
+    const devUrl = `http://${hostname}:${apiPort}/api`;
+    console.log("Using development API URL:", devUrl);
+    return devUrl;
 };
 
+const apiBaseUrl = getApiUrl();
+console.log("🌐 API Base URL configured:", apiBaseUrl);
+
 export const apiClient = axios.create({
-    baseURL: getApiUrl(),
+    baseURL: apiBaseUrl,
     withCredentials: true,
-    timeout: 10000, // 10 second timeout
+    timeout: 30000, // 30 second timeout (increased for Render's cold starts)
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
 // Add request interceptor to include JWT token
@@ -44,11 +56,18 @@ apiClient.interceptors.request.use(
     }
 );
 
-// Add response interceptor to handle token expiration
+// Add response interceptor to handle token expiration and errors
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        // Log connection errors for debugging
+        if (error.code === 'ECONNABORTED') {
+            console.error("⏱️ API Request timeout - Backend may be slow to respond");
+        } else if (error.code === 'ERR_NETWORK' || !error.response) {
+            console.error("🌐 Network error - Cannot connect to backend:", apiBaseUrl);
+            console.error("Error details:", error.message);
+            console.error("Make sure the backend is running and accessible");
+        } else if (error.response?.status === 401) {
             console.log("API 401 error:", error.response?.data?.message);
 
             // Only redirect on specific authentication errors, not on general 401s
@@ -63,6 +82,11 @@ apiClient.interceptors.response.use(
             } else {
                 console.log("401 error but not JWT related, not redirecting");
             }
+        } else if (error.response?.status === 403) {
+            console.error("🚫 CORS error - Backend rejected request from:", window.location.origin);
+            console.error("Make sure your frontend domain is added to CORS_ORIGINS in backend config");
+        } else {
+            console.error("API Error:", error.response?.status, error.response?.data || error.message);
         }
         return Promise.reject(error);
     }

@@ -44,6 +44,13 @@ const corsOptions = {
                     return callback(null, true);
                 }
             }
+            
+            // In production, log but allow HTTPS origins for flexibility
+            if (process.env.NODE_ENV === 'production' && origin.startsWith('https://')) {
+                console.log(`✅ Allowing HTTPS origin in production: ${origin}`);
+                return callback(null, true);
+            }
+            
             console.log(`❌ CORS blocked origin: ${origin}`);
             callback(new Error('Not allowed by CORS'));
         }
