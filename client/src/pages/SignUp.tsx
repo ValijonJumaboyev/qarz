@@ -21,6 +21,7 @@ export default function SignUp() {
     businessName: "",
     businessType: "",
   })
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -109,7 +110,7 @@ export default function SignUp() {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
+                className="w-full bg-transparent focus:outline-none"
                 placeholder="Ali Valiyev"
                 required
               />
@@ -128,7 +129,7 @@ export default function SignUp() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
+                className="w-full bg-transparent focus:outline-none"
                 placeholder="you@example.com"
                 required
               />
@@ -147,7 +148,7 @@ export default function SignUp() {
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
+                className="w-full bg-transparent focus:outline-none"
                 placeholder="+998 90 123 45 67"
                 required
               />
@@ -166,7 +167,7 @@ export default function SignUp() {
                 name="businessName"
                 value={form.businessName}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
+                className="w-full bg-transparent focus:outline-none"
                 placeholder="Qarzdor Supermarket"
                 required
               />
@@ -205,7 +206,7 @@ export default function SignUp() {
                 name="password"
                 value={form.password}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
+                className="w-full bg-transparent focus:outline-none"
                 placeholder="********"
                 required
               />
@@ -224,7 +225,7 @@ export default function SignUp() {
                 name="confirmPassword"
                 value={form.confirmPassword}
                 onChange={handleChange}
-                className="w-full bg-transparent focus:outline-none text-dark dark:text-white"
+                className="w-full bg-transparent focus:outline-none"
                 placeholder="********"
                 required
               />

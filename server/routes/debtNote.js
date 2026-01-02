@@ -54,20 +54,13 @@ router.post("/debts", authenticateToken, withShopDb, async (req, res) => {
 // --- LIST ALL ---
 router.get("/debts", authenticateToken, withShopDb, async (req, res) => {
     try {
-        console.log("GET /debts - Fetching debts for user:", req.user.email);
-
         // First, get all records to see what's in the database
         const allDebts = await req.getDebtNoteModel.find().sort({ createdAt: -1 });
-        console.log("GET /debts - All records found:", allDebts.length);
-        console.log("GET /debts - All records:", allDebts.map(d => ({ customerName: d.customerName, total: d.total })));
 
         // Filter out "Init" records and sort by creation date
         const debts = await req.getDebtNoteModel
             .find({ customerName: { $ne: "Init" } })
             .sort({ createdAt: -1 });
-
-        console.log("GET /debts - Filtered debts:", debts.length);
-        console.log("GET /debts - Sample debt:", debts[0]);
 
         res.json(debts);
     } catch (err) {
@@ -110,6 +103,22 @@ router.delete("/debts/:id", authenticateToken, withShopDb, async (req, res) => {
         res.json({ message: "Deleted successfully" });
     } catch (err) {
         res.status(500).json({ message: "Failed to delete debt", error: err.message });
+    }
+});
+
+// --- GET CUSTOMERS ---
+router.get("/customers", authenticateToken, withShopDb, async (req, res) => {
+    try {
+        const customers = await req.getDebtNoteModel.aggregate([
+            { $match: { customerName: { $ne: "Init" } } },
+            { $group: { _id: "$customerName", phone: { $first: "$phone" } } },
+            { $sort: { _id: 1 } },
+            { $project: { name: "$_id", phone: 1, _id: 0 } }
+        ]);
+        res.json(customers);
+    } catch (err) {
+        console.error("GET /customers - Error:", err);
+        res.status(500).json({ message: "Failed to fetch customers", error: err.message });
     }
 });
 

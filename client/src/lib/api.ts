@@ -154,6 +154,8 @@ export type CreateDebtPayload = {
     dueDate?: string | Date;
 };
 
+export type Customer = { name: string; phone?: string };
+
 export async function listDebts() {
     const { data } = await apiClient.get(`/debts`);
     return data as any[];
@@ -169,4 +171,7 @@ export async function updateDebtStatus(debtId: string, status: string) {
     return data;
 }
 
-
+export async function getCustomers() {
+    const { data } = await apiClient.get(`/customers`);
+    return data as Customer[];
+}
