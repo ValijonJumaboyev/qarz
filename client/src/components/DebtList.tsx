@@ -24,6 +24,7 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
   const [statusFilter, setStatusFilter] = useState<
     "all" | "paid" | "unpaid" | "denied"
   >("all")
+  const [currentPage, setCurrentPage] = useState(1)
   const [pendingChange, setPendingChange] = useState<{
     id: string
     newStatus: string
@@ -35,9 +36,7 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
       if (!user) return
       setLoading(true)
       try {
-        console.log("Fetching debts for user:", user.email)
         const data = await listDebts()
-        console.log("Received debts:", data)
         setDebts(data)
       } catch (error) {
         console.error("Error fetching debts:", error)
@@ -64,10 +63,6 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
 
   // Compute visible debts using useMemo for proper reactivity
   const visibleDebts = useMemo(() => {
-    console.log("=== Computing visibleDebts ===", {
-      statusFilter,
-      debtsCount: debts.length,
-    })
     const term = search.trim().toLowerCase()
 
     // Always group unpaid debts by customer name, regardless of filter
@@ -75,12 +70,6 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
       const status = d.status || "unpaid"
       return status === "unpaid"
     })
-
-    console.log(
-      "Unpaid debts found:",
-      unpaidDebts.length,
-      unpaidDebts.map((d) => ({ name: d.customerName, status: d.status }))
-    )
 
     // Group unpaid debts by customer name
     const groupMap = new Map<string, GroupedDebt>()
@@ -103,16 +92,6 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
       entry.records.push(d)
     })
 
-    console.log(
-      "Groups in map:",
-      groupMap.size,
-      Array.from(groupMap.entries()).map(([k, v]) => ({
-        key: k,
-        name: v.customerName,
-        records: v.records.length,
-      }))
-    )
-
     // Separate groups (multiple records) from individual debts (single record)
     const groups: GroupedDebt[] = []
     const individualDebts: Debt[] = []
@@ -122,21 +101,11 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
       if (group.records.length > 1) {
         groups.push(group)
         groupedNames.add(normalizeName(group.customerName))
-        console.log(
-          `✓ Grouped: "${group.customerName}" with ${group.records.length} records`
-        )
       } else {
         // This is an individual debt (only one record for this customer)
         individualDebts.push(group.records[0])
       }
     })
-
-    console.log(
-      "Final result - Groups:",
-      groups.length,
-      "Individual:",
-      individualDebts.length
-    )
 
     // Filter groups by search term
     const filteredGroups = groups.filter((g) => {
@@ -193,14 +162,24 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
     const result = shouldShowUnpaid
       ? [...filteredGroups, ...filteredIndividual, ...filteredNonUnpaid]
       : [...filteredNonUnpaid]
-    console.log("=== Final visibleDebts ===", {
-      total: result.length,
-      groups: filteredGroups.length,
-      unpaidIndividual: filteredIndividual.length,
-      nonUnpaid: filteredNonUnpaid.length,
-    })
     return result
   }, [debts, search, statusFilter])
+
+  // Pagination constants
+  const ITEMS_PER_PAGE = 15
+  const totalPages = Math.ceil(visibleDebts.length / ITEMS_PER_PAGE)
+
+  // Get current page items
+  const paginatedDebts = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+    const endIndex = startIndex + ITEMS_PER_PAGE
+    return visibleDebts.slice(startIndex, endIndex)
+  }, [visibleDebts, currentPage])
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, statusFilter])
 
   const totals = useMemo(() => {
     const total = visibleDebts.reduce((s, d) => s + (Number(d.total) || 0), 0)
@@ -370,7 +349,7 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
 
       {/* Mobile Card View */}
       <div className="block md:hidden space-y-3">
-        {visibleDebts.map((d) => (
+        {paginatedDebts.map((d) => (
           <div
             key={d._id}
             className="p-4 rounded-xl bg-white dark:bg-gray-900 shadow border border-gray-200 dark:border-gray-800 space-y-3"
@@ -437,6 +416,11 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
             )}
           </div>
         ))}
+        {paginatedDebts.length === 0 && visibleDebts.length > 0 && (
+          <div className="p-6 text-center text-gray-500 dark:text-gray-400">
+            Bu sahifada ma'lumot yo'q
+          </div>
+        )}
         {visibleDebts.length === 0 && (
           <div className="p-6 text-center text-gray-500 dark:text-gray-400">
             Hozircha ma'lumot yo'q
@@ -458,7 +442,7 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
             </tr>
           </thead>
           <tbody>
-            {visibleDebts.map((d) => (
+            {paginatedDebts.map((d) => (
               <tr
                 key={d._id}
                 className="border-t border-gray-200 dark:border-gray-800"
@@ -525,6 +509,13 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
                 </td>
               </tr>
             ))}
+            {paginatedDebts.length === 0 && visibleDebts.length > 0 && (
+              <tr>
+                <td className="px-6 py-6 text-center text-gray-500" colSpan={6}>
+                  Bu sahifada ma'lumot yo'q
+                </td>
+              </tr>
+            )}
             {visibleDebts.length === 0 && (
               <tr>
                 <td className="px-6 py-6 text-center text-gray-500" colSpan={6}>
@@ -535,6 +526,55 @@ export default function DebtList({ refreshKey }: { refreshKey: number }) {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+          <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+            <span>
+              Sahifa {currentPage} / {totalPages} ({visibleDebts.length} ta yozuv)
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1 text-sm font-medium text-gray-500 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Oldingi
+            </button>
+
+            {/* Page numbers */}
+            <div className="flex space-x-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                const pageNum = Math.max(1, Math.min(totalPages - 4, currentPage - 2)) + i
+                if (pageNum > totalPages) return null
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`px-3 py-1 text-sm font-medium rounded-md ${
+                      pageNum === currentPage
+                        ? "bg-emerald-600 text-white"
+                        : "text-gray-500 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                )
+              })}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 text-sm font-medium text-gray-500 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Keyingi
+            </button>
+          </div>
+        </div>
+      )}
 
       <br />
 
